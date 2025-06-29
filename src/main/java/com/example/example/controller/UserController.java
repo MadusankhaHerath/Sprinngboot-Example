@@ -25,5 +25,8 @@ public class UserController {
         return UserService.saveUser(userDTO);
     }
 
-
+    @PutMapping("/updateuser")
+    public UserDTO updateUser(@RequestBody UserDTO userDTO){
+        return UserService.updateUser(userDTO);
+    }
 }
