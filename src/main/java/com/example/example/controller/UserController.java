@@ -1,41 +1,44 @@
 package com.example.example.controller;
 
 
-import com.example.example.dto.UserDTO;
-import com.example.example.service.UserService;
+import com.example.example.dto.UserCreateDTO;
+import com.example.example.dto.UserResponseDTO;
+import com.example.example.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.example.example.service.UserService;
 
 import java.util.List;
 
 @RequestMapping("api/v1")
 @RestController
-@CrossOrigin
 public class UserController {
+
+    private final UserService userService;
+
     @Autowired
-    private UserService UserService;
-    @Autowired
-    private UserService userService;
-
-    @GetMapping("/getusers")
-    public List<UserDTO> getUsers() {
-        return UserService.getAllUsers();
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
-    @PostMapping("/adduser")
-    public UserDTO saveUser(@RequestBody UserDTO userDTO){
-        return UserService.saveUser(userDTO);
+    @PostMapping("/create")
+    public ResponseEntity<UserResponseDTO> create(@RequestBody UserCreateDTO userCreateDTO) {
+        UserResponseDTO response = userService.create(userCreateDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PutMapping("/updateuser")
-    public UserDTO updateUser(@RequestBody UserDTO userDTO){
-        return UserService.updateUser(userDTO);
+    @GetMapping("/getAll")
+    public ResponseEntity<List<UserResponseDTO>> getAll() {
+        List<UserResponseDTO> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
     }
 
-    @DeleteMapping("/deleteuser/{userid}")
-    public String deleteUser(@PathVariable Integer userid){
-        return UserService.deleteUser(userid);
+    @GetMapping("/getById/{id}")
+    public ResponseEntity<UserResponseDTO> getById(@PathVariable int id) {
+        UserResponseDTO response = userService.getById(id);
+        return ResponseEntity.ok(response);
     }
-
-
 }
